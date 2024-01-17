@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT anywhere",
+  "version": "0.0.0",
+  "permissions": [
+    "cookies"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*/*"
+      ],
+      "js": [
+        "openai.js",
+        "content-script.js"
+      ]
+    }
+  ],
+  "host_permissions": [
+    "*://chat.openai.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  }
+}

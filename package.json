@@ -1,0 +1,19 @@
+{
+  "name": "chatgpt-anywhere",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify ./src/background.js --standalone bundle -o ./extension/background.js",
+    "buildOnly": "browserify ./src/background.js -o ./extension/background.js",
+    "dev": "nodemon -e js --watch ./src --exec \"npm run build\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@microsoft/fetch-event-source": "github:AkashKarnatak/fetch-event-source#support-ext",
+    "browserify": "^17.0.0",
+    "nodemon": "^3.0.3"
+  }
+}
