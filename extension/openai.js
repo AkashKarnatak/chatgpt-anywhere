@@ -1,3 +1,5 @@
+const extension = typeof browser !== 'undefined' ? browser : chrome
+
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0,
@@ -11,7 +13,7 @@ class OpenAIConversation {
   constructor(onMessage, conversationId) {
     this.conversationId = conversationId
     this.lastParentMessageId = uuidv4()
-    this.port = chrome.runtime.connect({ name: 'openai' })
+    this.port = extension.runtime.connect({ name: 'openai' })
     this.port.onMessage.addListener(
       ({ content, conversationId, lastParentMessageId }) => {
         this.conversationId = conversationId

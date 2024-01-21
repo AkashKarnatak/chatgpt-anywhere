@@ -1,3 +1,4 @@
+const extension = typeof browser !== 'undefined' ? browser : chrome
 const { fetchEventSource } = require('@microsoft/fetch-event-source')
 
 let accessToken
@@ -27,7 +28,40 @@ async function getAccessToken() {
   }
 }
 
-const askGPT = ({
+async function getGPTModels() {
+  try {
+    const res = await fetch(
+      'https://chat.openai.com/backend-api/models?history_and_training_disabled=true',
+      {
+        headers: {
+          authorization: `Bearer ${accessToken}`,
+        },
+      },
+    )
+    if (!res.ok) {
+      throw new Error('Response status:' + res.status)
+    }
+    const data = await res.json()
+    const gptModels = data?.categories?.map((x) => {
+      return {
+        name: x.human_category_name,
+        modelName: x.default_model,
+      }
+    })
+    if (!gptModels) {
+      throw new Error('No models found')
+    }
+    await extension.storage.local.set({ gptModels })
+    // right now openai returns their model in ascending
+    // order (worst to best). This should select the best
+    // model
+    await extension.storage.local.set({ gptSelected: gptModels.at(-1).name })
+  } catch (e) {
+    return e
+  }
+}
+
+const askGPT = async ({
   message,
   onMessage,
   conversationId,
@@ -38,6 +72,13 @@ const askGPT = ({
         conversation_id: conversationId,
       }
     : {}
+  const { gptSelected, gptModels } = await extension.storage.local.get([
+    'gptSelected',
+    'gptModels',
+  ])
+  const model =
+    gptModels.find((x) => x.name === gptSelected)?.modelName ||
+    'text-davinci-002-render-sha'
   fetchEventSource('https://chat.openai.com/backend-api/conversation', {
     method: 'POST',
     headers: {
@@ -47,6 +88,7 @@ const askGPT = ({
     credentials: 'include',
     body: JSON.stringify({
       action: 'next',
+      // TODO: generate arkose token to call locked apis
       arkose_token: null,
       ...conversationIdObj,
       conversation_mode: { kind: 'primary_assistant' },
@@ -64,7 +106,7 @@ const askGPT = ({
           metadata: {},
         },
       ],
-      model: 'text-davinci-002-render-sha',
+      model,
       parent_message_id: lastParentMessageId,
       suggestions: [],
       timezone_offset_min: -330,
@@ -111,11 +153,11 @@ const askGPT = ({
   })
 }
 
-chrome.runtime.onConnect.addListener(function (port) {
+extension.runtime.onConnect.addListener(function (port) {
   console.assert(port.name === 'openai')
   port.onMessage.addListener(
-    ({ message, conversationId, lastParentMessageId }) => {
-      askGPT({
+    async ({ message, conversationId, lastParentMessageId }) => {
+      await askGPT({
         message: message,
         onMessage: ({ content, conversationId, lastParentMessageId }) => {
           port.postMessage({ content, conversationId, lastParentMessageId })
@@ -126,16 +168,18 @@ chrome.runtime.onConnect.addListener(function (port) {
     },
   )
 })
-
-if (!accessToken) {
-  getAccessToken()
-    .then(() => {
-      console.log(accessToken)
-    })
-    .catch((e) => {
-      console.error(e)
-    })
-}
+;(async () => {
+  if (accessToken) return
+  const err = await getAccessToken()
+  console.log(accessToken)
+  if (err instanceof Error) {
+    console.error(err)
+  }
+  const err2 = await getGPTModels()
+  if (err2 instanceof Error) {
+    console.error(err2)
+  }
+})()
 
 self.extra = {
   fetchEventSource,

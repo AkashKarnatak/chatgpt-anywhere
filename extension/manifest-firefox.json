@@ -1,9 +1,11 @@
 {
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "ChatGPT anywhere",
   "version": "0.0.0",
   "permissions": [
-    "cookies"
+    "cookies",
+    "storage",
+    "*://chat.openai.com/*"
   ],
   "content_scripts": [
     {
@@ -16,10 +18,10 @@
       ]
     }
   ],
-  "host_permissions": [
-    "*://chat.openai.com/*"
-  ],
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   }
 }
