@@ -1,5 +1,6 @@
 const extension = typeof browser !== 'undefined' ? browser : chrome
 const { fetchEventSource } = require('@microsoft/fetch-event-source')
+const { getToken } = require('chatgpt-arkose-token-generator')
 
 let accessToken
 
@@ -67,11 +68,12 @@ const askGPT = async ({
   conversationId,
   lastParentMessageId,
 }) => {
-  const conversationIdObj = conversationId
-    ? {
-        conversation_id: conversationId,
-      }
-    : {}
+  const opts = {
+    arkose_token: null,
+  }
+  if (conversationId) {
+    opts.conversation_id = conversationId
+  }
   const { gptSelected, gptModels } = await extension.storage.local.get([
     'gptSelected',
     'gptModels',
@@ -79,6 +81,18 @@ const askGPT = async ({
   const model =
     gptModels.find((x) => x.name === gptSelected)?.modelName ||
     'text-davinci-002-render-sha'
+  if (model !== 'text-davinci-002-render-sha') {
+    // NOTE: there's something magical about this public key
+    // as it does not require sending of additional data
+    // string for generating arkose token.
+    // TODO: Figure out what's up
+    const { token } = await getToken({
+      pkey: '3D86FBBA-9D22-402A-B512-3420086BA6CC',
+      surl: 'https://tcr9i.chat.openai.com',
+      site: 'https://chat.openai.com',
+    })
+    opts.arkose_token = token || null
+  }
   fetchEventSource('https://chat.openai.com/backend-api/conversation', {
     method: 'POST',
     headers: {
@@ -88,9 +102,7 @@ const askGPT = async ({
     credentials: 'include',
     body: JSON.stringify({
       action: 'next',
-      // TODO: generate arkose token to call locked apis
-      arkose_token: null,
-      ...conversationIdObj,
+      ...opts,
       conversation_mode: { kind: 'primary_assistant' },
       force_paragen: false,
       force_rate_limit: false,

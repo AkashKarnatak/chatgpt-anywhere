@@ -15,6 +15,7 @@
   "dependencies": {
     "@microsoft/fetch-event-source": "github:AkashKarnatak/fetch-event-source#support-ext",
     "browserify": "^17.0.0",
+    "chatgpt-arkose-token-generator": "github:AkashKarnatak/chatgpt-arkose-token-generator",
     "nodemon": "^3.0.3"
   },
   "devDependencies": {

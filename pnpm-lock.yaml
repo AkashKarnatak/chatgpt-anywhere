@@ -11,6 +11,9 @@ dependencies:
   browserify:
     specifier: ^17.0.0
     version: 17.0.0
+  chatgpt-arkose-token-generator:
+    specifier: github:AkashKarnatak/chatgpt-arkose-token-generator
+    version: github.com/AkashKarnatak/chatgpt-arkose-token-generator/586740b5f98ce89b3843860131d891217481796c
   nodemon:
     specifier: ^3.0.3
     version: 3.0.3
@@ -1539,6 +1542,16 @@ packages:
 
   /yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
+    dev: false
+
+  github.com/AkashKarnatak/chatgpt-arkose-token-generator/586740b5f98ce89b3843860131d891217481796c:
+    resolution: {tarball: https://codeload.github.com/AkashKarnatak/chatgpt-arkose-token-generator/tar.gz/586740b5f98ce89b3843860131d891217481796c}
+    name: chatgpt-arkose-token-generator
+    version: 1.1.7
+    dependencies:
+      browserify-cipher: 1.0.1
+      create-hash: 1.2.0
+      randombytes: 2.1.0
     dev: false
 
   github.com/AkashKarnatak/fetch-event-source/e23c0d25dd847c274b6edb1d8a54155fc359cfc9:
