@@ -93,6 +93,8 @@ const askGPT = async ({
     })
     opts.arkose_token = token || null
   }
+
+  const controller = new AbortController()
   fetchEventSource('https://chat.openai.com/backend-api/conversation', {
     method: 'POST',
     headers: {
@@ -123,12 +125,29 @@ const askGPT = async ({
       suggestions: [],
       timezone_offset_min: -330,
     }),
+    signal: controller.signal,
     openWhenHidden: true,
-    onopen: (response) => {
+    onopen: async (response) => {
       if (response.ok) {
         return console.log('SSE connection opened')
       }
       console.log('response not 200', response.status)
+      try {
+        const data = await response.json()
+        console.log('passing error')
+        onMessage({
+          conversationId: '##error##',
+          content: data?.detail?.message || 'Unable to process request',
+        })
+        controller.abort()
+      } catch (e) {
+        console.log('passing catch error')
+        onMessage({
+          conversationId: '##error##',
+          content: 'Unable to process request',
+        })
+        controller.abort()
+      }
     },
     onmessage: (msg) => {
       if (msg.event === 'FatalError') {

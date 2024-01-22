@@ -20,14 +20,21 @@ function uuidv4() {
 class OpenAIConversation {
   /**
    * Creates an instance of OpenAIConversation.
-   * @param {(content: string) => void} onMessage - Callback function for handling openai streaming response.
+   * @constructor
+   * @param {Object} config - Configuration object for the constructor.
+   * @param {(content: string) => void} config.onMessage - Callback function for handling openai streaming response.
+   * @param {(content: string) => void} config.onError - Callback function for handling openai error response.
    */
-  constructor(onMessage) {
+  constructor({ onMessage, onError }) {
     this.conversationId = undefined
     this.lastParentMessageId = uuidv4()
     this.port = extension.runtime.connect({ name: 'openai' })
     this.port.onMessage.addListener(
       ({ content, conversationId, lastParentMessageId }) => {
+        if (conversationId === '##error##') {
+          console.log('error in openai response')
+          return onError(content)
+        }
         this.conversationId = conversationId
         this.lastParentMessageId = lastParentMessageId
         onMessage(content)
