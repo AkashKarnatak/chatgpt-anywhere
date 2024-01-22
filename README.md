@@ -7,9 +7,11 @@ the ChatGPT browser API and offering developers a cost-efficient solution by eli
 paid API calls.
 
 ## Features
-* Convenient API: Offers a straightforward and easy-to-use interface for integrating ChatGPT functionalities.
-* Cost-effective: Reduces costs by eliminating the need for OpenAI's paid API calls, as it interacts directly with the ChatGPT browser API.
-* Flexible: Designed as a skeleton, it provides a solid starting point for building a wide range of browser extensions utilizing ChatGPT.
+* **Convenient API**: Offers a straightforward and easy-to-use interface for integrating ChatGPT functionalities.
+* **Cost-effective**: Reduces costs by eliminating the need for OpenAI's paid API calls, as it interacts directly with the ChatGPT browser API.
+* **Flexible**: Designed as a skeleton, it provides a solid starting point for building a wide range of browser extensions utilizing ChatGPT.
+* **ChatGPT Plus Compatibility**: Supports users with ChatGPT Plus subscriptions, providing access to the enhanced capabilities of ChatGPT 4 API.
+* **Version Selection Menu**: Includes a convenient options menu in the extension popup, allowing users to select between different versions of ChatGPT.
 
 ## Setup and Installation
 
