@@ -91,6 +91,13 @@ handle errors respectively.
 Use the conversation object within your extension's functionality to enable
 dynamic interactions with ChatGPT.
 
+## Extensions Built on ChatGPT Anywhere
+
+* [**YTGPT**](https://github.com/akashKarnatak/ytgpt): YTGPT is a Google Chrome extension that utilizes "ChatGPT Anywhere" to provide concise summaries of YouTube videos. It is especially useful for users who want to quickly understand the key points of lengthy videos without spending a lot of time watching them. YTGPT offers an efficient and user-friendly solution for staying informed on various topics covered in YouTube videos.
+
+If you have developed an extension using "ChatGPT Anywhere" and would like to
+feature it here, please share details about your project in this [issue](https://github.com/AkashKarnatak/chatgpt-anywhere/issues/1).
+
 ## Contributing
 
 Contributions are welcome! If you find a bug, have an idea for an enhancement, or want to contribute in any way, feel free to open an issue or submit a pull request.
