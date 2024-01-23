@@ -3,7 +3,6 @@
   "name": "ChatGPT anywhere",
   "version": "1.0.0",
   "permissions": [
-    "cookies",
     "storage"
   ],
   "content_scripts": [
