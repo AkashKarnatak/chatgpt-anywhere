@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "ChatGPT anywhere",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "permissions": [
     "storage",
     "*://chat.openai.com/*"
