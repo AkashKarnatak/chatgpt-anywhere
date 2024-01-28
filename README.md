@@ -27,7 +27,7 @@ paid API calls.
    cd chatgpt-anywhere
    ```
 
-3. Install dependencies:
+3. Install dependencies(To run npm you need [node.js](https://nodejs.org/en/download) installed) :
 
    ```bash
    npm install
