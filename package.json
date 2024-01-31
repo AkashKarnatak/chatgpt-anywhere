@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "bundle": "browserify ./src/background.js --standalone bundle -o ./extension/background.js",
-    "postBundle": "rimraf firefox-extension chrome-extension && ncp extension firefox-extension && ncp extension chrome-extension && rimraf chrome-extension/manifest*.json firefox-extension/manifest*.json && ncp extension/manifest-chrome.json chrome-extension/manifest.json && ncp extension/manifest-firefox.json firefox-extension/manifest.json",
+    "postBundle": "rimraf firefox-extension chrome-extension && ncp extension firefox-extension && ncp extension chrome-extension && rimraf --glob chrome-extension/manifest*.json firefox-extension/manifest*.json && ncp extension/manifest-chrome.json chrome-extension/manifest.json && ncp extension/manifest-firefox.json firefox-extension/manifest.json",
     "build": "npm run bundle && npm run postBundle",
     "dev": "nodemon -e js --watch ./src --exec \"npm run build\""
   },
