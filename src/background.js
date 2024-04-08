@@ -2,7 +2,7 @@ const extension = typeof browser !== 'undefined' ? browser : chrome
 const { fetchEventSource } = require('@microsoft/fetch-event-source')
 const { getToken } = require('chatgpt-arkose-token-generator')
 
-let accessToken
+let accessToken, sentinelToken
 
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -24,6 +24,28 @@ async function getAccessToken() {
     }
     accessToken = data.accessToken
     return data.accessToken
+  } catch (e) {
+    return e
+  }
+}
+
+async function getSentinelToken() {
+  try {
+    const res = await fetch('https://chat.openai.com/backend-api/sentinel/chat-requirements', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    })
+    if (!res.ok) {
+      throw new Error('Response status:' + res.status)
+    }
+    const data = await res.json()
+    if (!data.token) {
+      throw new Error('No sentinel token returned')
+    }
+    sentinelToken = data.token
+    return data.token
   } catch (e) {
     return e
   }
@@ -100,6 +122,7 @@ const askGPT = async ({
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${accessToken}`,
+      'Openai-Sentinel-Chat-Requirements-Token': sentinelToken,
     },
     credentials: 'include',
     body: JSON.stringify({
@@ -206,9 +229,14 @@ extension.runtime.onConnect.addListener(function (port) {
   if (err instanceof Error) {
     console.error(err)
   }
-  const err2 = await getGPTModels()
+  const err2 = await getSentinelToken()
+  console.log(sentinelToken)
   if (err2 instanceof Error) {
     console.error(err2)
+  }
+  const err3 = await getGPTModels()
+  if (err3 instanceof Error) {
+    console.error(err3)
   }
 })()
 
